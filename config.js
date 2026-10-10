@@ -8,7 +8,7 @@
 //                   public. Never put a secret key ('sb_secret_...') or a shop's write key here.
 //   shopCode        This shop's code in the "shops" table, e.g. 'kinderyoga-sabine'
 export const supabaseConfig = {
-    url: '',
-    publishableKey: '',
-    shopCode: ''
+    url: 'https://fjfwvxogetdxdnlcnqcz.supabase.co',
+    publishableKey: 'sb_publishable_HWpdP-SkhIgIUUG1mZV1cw_gcYQALHi',
+    shopCode: 'kinderyoga-sabine'
 };
