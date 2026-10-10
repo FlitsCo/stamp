@@ -1,18 +1,14 @@
-import { db, getDoc, doc } from './firebase.js';
-
-const accCode = "08ubKtZF150O6Q99kCT1nPUgx8t2tVNjWsJibPEaSRX0KqURd96ICmc4y5sJzJIKtwT0LJQvojdfCnIif0LSxfFufFlZXtxLz5y9jdBWaH90B25F0TNYOw1Wz01it1MA"
+import { loadCard, loadShopLogo } from './data.js';
 
 async function readData(id) {
     if (!id) {
         return false;
     }
-    const ref = doc(db, accCode, id);
-    const snap = await getDoc(ref);
+    const card = await loadCard(id);
 
-    if (snap.exists()) {
-        const data = snap.data();
-        appData.totalStamps = data.total;
-        appData.collectedStamps = data.current;
+    if (card) {
+        appData.totalStamps = card.total;
+        appData.collectedStamps = card.current;
         return true;
     }
     console.log('No such document!');
@@ -156,18 +152,20 @@ function readQueryValue() {
     return value;
 }
 
-// Load header logo from Firestore
+// Load header logo (and the shop's name, if the backend has one)
 async function loadHeaderLogo() {
     if (!companyLogoElement) return;
     try {
-        const logoRef = doc(db, accCode, 'headerimage');
-        const logoSnap = await getDoc(logoRef);
-        if (logoSnap.exists()) {
-            const data = logoSnap.data();
+        const logo = await loadShopLogo();
+        if (logo.name) {
+            appData.companyName = logo.name;
+            applyTranslations();
+        }
+        if (logo.source) {
             const matcher = window.matchMedia('(prefers-color-scheme: dark)');
             const setLogo = () => {
                 const prefersDark = matcher.matches;
-                companyLogoElement.src = prefersDark && data.url_dark ? data.url_dark : data.url;
+                companyLogoElement.src = prefersDark && logo.urlDark ? logo.urlDark : logo.url;
                 companyLogoElement.alt = `${appData.companyName} logo`;
             };
             setLogo();
